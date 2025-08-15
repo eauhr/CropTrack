@@ -1,4 +1,4 @@
-﻿namespace croptrack.Models
+﻿namespace CropTrack.Models
 {
     public class Crop
     {

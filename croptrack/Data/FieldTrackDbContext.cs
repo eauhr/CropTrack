@@ -1,11 +1,11 @@
-﻿using croptrack.Models;
+﻿using CropTrack.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace croptrack.Data
+namespace CropTrack.Data
 {
-    public class FieldTrackContext : DbContext
+    public class FieldDbTrackContext : DbContext
     {
-        public FieldTrackContext(DbContextOptions<FieldTrackContext> options)
+        public FieldDbTrackContext(DbContextOptions<FieldDbTrackContext> options)
             : base(options) { }
 
         public DbSet<Crop> Crops { get; set; }
@@ -18,7 +18,10 @@ namespace croptrack.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=DESKTOP-05GROST\\SQLEXPRESS;Database=fieldtrack;Trusted_Connection=True;");
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=fieldtrack;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=True;");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

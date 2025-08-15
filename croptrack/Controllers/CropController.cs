@@ -1,4 +1,4 @@
-﻿namespace croptrack.Controllers
+﻿namespace CropTrack.Controllers
 {
     public class CropController
     {

@@ -1,50 +1,55 @@
-﻿using croptrack.Data;
-using croptrack.Models;
+﻿using CropTrack.Data;
+using CropTrack.Models;
+using CropTrack.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace croptrack.Controllers
+namespace CropTrack.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class FarmerController : ControllerBase
     {
-        private readonly FieldTrackContext _context;
+        private FarmerService farmerService;
 
-        public FarmerController(FieldTrackContext context)
+        public FarmerController(FarmerService service)
         {
-            _context = context;
+            farmerService = service;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(Farmer farmer)
+        public async Task<IActionResult> Register([FromBody] RegisterFarmerRequest request)
         {
-            if (await _context.Farmers.AnyAsync(f => f.Email == farmer.Email))
-            {
-                return BadRequest("Email already registered.");
+           
+                bool result = await farmerService.RegisterAsync(request);
+                if (result)
+                {
+                    return Ok("Farmer registered successfully.");
+                }
+                else
+                {
+                    return BadRequest("Farmer could not be registered.");
+                }
             }
-
-            _context.Farmers.Add(farmer);
-            await _context.SaveChangesAsync();
-
-            return Ok("Farmer registered successfully.");
-        }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] Farmer loginData)
+        public async Task<IActionResult> Login([FromBody] LoginFarmerRequest request)
         {
-            var farmer = await _context.Farmers
-                .FirstOrDefaultAsync(f => f.Email == loginData.Email && f.Password == loginData.Password);
-
-            if (farmer == null)
+            try
             {
-                return Unauthorized("Invalid email or password.");
+                var farmer = await farmerService.LoginAsync(request);
+
+                return Ok(new
+                {
+                    Message = "Login successful",
+                    Farmer = farmer
+                });
             }
-
-            return Ok($"Welcome {farmer.Name}!");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-
-
 
     }
 }

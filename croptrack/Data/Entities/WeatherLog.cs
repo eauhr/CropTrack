@@ -1,4 +1,6 @@
-﻿namespace croptrack.Models
+﻿using CropTrack.Models;
+
+namespace CropTrack.Models
 {
     public class WeatherLog
     {
