@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CropTrack.Repositories
 {
-    public class FieldRepository : IDb<Field, int>
+    public class FieldRepository : IFieldRepository
     {
         private readonly FieldDbTrackContext _context;
 
@@ -13,69 +13,35 @@ namespace CropTrack.Repositories
             _context = context;
         }
 
-        public void Create(Field item)
+        public async Task<List<Field>> GetAllByFarmerId(int farmerId)
         {
-            _context.Fields.Add(item);
-            _context.SaveChanges();
+            return await _context.Fields.Where(f => f.FarmerId == farmerId).ToListAsync();
         }
 
-        public Field Read(int key, bool useNavigationalProperties = false, bool isReadOnly = false)
+        public async Task<Field> GetById(int id)
         {
-            IQueryable<Field> query = _context.Fields.AsQueryable();
-
-            if (isReadOnly)
-                query = query.AsNoTracking();
-
-            if (useNavigationalProperties)
-            {
-                query = query.Include(f => f.Farmer)
-                           .Include(f => f.Region)
-                           .Include(f => f.FieldCrops)
-                           .ThenInclude(fc => fc.Crop);
-            }
-
-            return query.FirstOrDefault(f => f.FieldId == key);
+            return await _context.Fields
+                .Include(f => f.FieldCrops)
+                .FirstOrDefaultAsync(f => f.FieldId == id);
         }
 
-        public List<Field> ReadAll(bool useNavigationalProperties = false, bool isReadOnly = false)
+        public async Task Add(Field field)
         {
-            IQueryable<Field> query = _context.Fields.AsQueryable();
-
-            if (isReadOnly)
-                query = query.AsNoTracking();
-
-            if (useNavigationalProperties)
-            {
-                query = query.Include(f => f.Farmer)
-                           .Include(f => f.Region)
-                           .Include(f => f.FieldCrops)
-                           .ThenInclude(fc => fc.Crop);
-            }
-
-            return query.ToList();
+            _context.Fields.Add(field);
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Field item, bool useNavigationalProperties = false)
+        public async Task Update(Field field)
         {
-            if (useNavigationalProperties)
-            {
-                _context.Update(item);
-            }
-            else
-            {
-                _context.Fields.Update(item);
-            }
-            _context.SaveChanges();
+            _context.Fields.Update(field);
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(int key)
+
+        public async Task Delete(Field field)
         {
-            var field = Read(key);
-            if (field != null)
-            {
-                _context.Fields.Remove(field);
-                _context.SaveChanges();
-            }
+            _context.Fields.Remove(field);
+            await _context.SaveChangesAsync();
         }
     }
 }

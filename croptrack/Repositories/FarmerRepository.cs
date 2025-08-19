@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CropTrack.Repositories
 {
-    public class FarmerRepository
+    public class FarmerRepository : IFarmerRepository
     {
         private readonly FieldDbTrackContext _context;
 
@@ -13,12 +13,12 @@ namespace CropTrack.Repositories
             _context = context;
         }
 
-        public async Task<Farmer> GetByEmailAsync(string email)
+        public async Task<Farmer> GetByEmail(string email)
         {
             return await _context.Farmers.FirstOrDefaultAsync(f => f.Email == email);
         }
 
-        public async Task AddAsync(Farmer farmer)
+        public async Task Add(Farmer farmer)
         {
             _context.Farmers.Add(farmer);
             await _context.SaveChangesAsync();

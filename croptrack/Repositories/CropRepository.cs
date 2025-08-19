@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CropTrack.Repositories
 {
-    public class CropRepository : IDb<Crop, int>
+    public class CropRepository : ICropRepository
     {
         private readonly FieldDbTrackContext _context;
 
@@ -13,67 +13,32 @@ namespace CropTrack.Repositories
             _context = context;
         }
 
-        public void Create(Crop item)
+        public async Task<IEnumerable<Crop>> GetAll()
         {
-            _context.Crops.Add(item);
-            _context.SaveChanges();
+            return await _context.Crops.ToListAsync();
         }
 
-        public Crop Read(int key, bool useNavigationalProperties = false, bool isReadOnly = false)
+        public async Task<Crop> GetById(int id)
         {
-            IQueryable<Crop> query = _context.Crops.AsQueryable();
-
-            if (isReadOnly)
-                query = query.AsNoTracking();
-
-            if (useNavigationalProperties)
-            {
-                query = query.Include(c => c.FieldCrops)
-                           .ThenInclude(fc => fc.Field)
-                           .Include(c => c.MarketPrices);
-            }
-
-            return query.FirstOrDefault(c => c.CropId == key);
+            return await _context.Crops.FindAsync(id);
         }
 
-        public List<Crop> ReadAll(bool useNavigationalProperties = false, bool isReadOnly = false)
+        public async Task Add(Crop crop)
         {
-            IQueryable<Crop> query = _context.Crops.AsQueryable();
-
-            if (isReadOnly)
-                query = query.AsNoTracking();
-
-            if (useNavigationalProperties)
-            {
-                query = query.Include(c => c.FieldCrops)
-                           .ThenInclude(fc => fc.Field)
-                           .Include(c => c.MarketPrices);
-            }
-
-            return query.ToList();
+            _context.Crops.Add(crop);
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Crop item, bool useNavigationalProperties = false)
+        public async Task Update(Crop crop)
         {
-            if (useNavigationalProperties)
-            {
-                _context.Update(item);
-            }
-            else
-            {
-                _context.Crops.Update(item);
-            }
-            _context.SaveChanges();
+            _context.Crops.Update(crop);
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(int key)
+        public async Task Delete(Crop crop)
         {
-            var crop = Read(key);
-            if (crop != null)
-            {
-                _context.Crops.Remove(crop);
-                _context.SaveChanges();
-            }
+            _context.Crops.Remove(crop);
+            await _context.SaveChangesAsync();
         }
     }
 }
