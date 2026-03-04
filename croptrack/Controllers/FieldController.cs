@@ -21,7 +21,7 @@ namespace CropTrack.Controllers
         [HttpGet("{farmerId}")]
         public async Task<IActionResult> GetAll(int farmerId)
         {
-            var fields = await _fieldService.GetFarmerFields(farmerId);
+            List<Field> fields = await _fieldService.GetFarmerFields(farmerId);
             return Ok(fields);
         }
 

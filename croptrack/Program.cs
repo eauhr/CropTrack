@@ -16,6 +16,14 @@ builder.Services.AddScoped<ICropRepository, CropRepository>();
 builder.Services.AddScoped<ICropService, CropService>();
 builder.Services.AddScoped<IFieldService, FieldService>();
 builder.Services.AddScoped<IFieldRepository, FieldRepository>();
+builder.Services.AddScoped<IFieldCropRepository, FieldCropRepository>();
+builder.Services.AddScoped<IFieldCropService, FieldCropService>();
+builder.Services.AddScoped<IRegionRepository, RegionRepository>();
+builder.Services.AddScoped<IRegionService, RegionService>();
+builder.Services.AddScoped<IWeatherLogRepository, WeatherLogRepository>();
+builder.Services.AddScoped<IWeatherLogService, WeatherLogService>();
+builder.Services.AddScoped<IMarketPriceRepository, MarketPriceRepository>();
+builder.Services.AddScoped<IMarketPriceService, MarketPriceService>();
 
 
 builder.Services.AddControllers();
@@ -98,7 +106,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "CropTrack API v1");
-        c.RoutePrefix = string.Empty; 
+        c.RoutePrefix = "swagger";
     });
 }
 app.UseCors("AllowAll");

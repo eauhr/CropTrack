@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CropTrackApp.Pages.RegisterPage"
+             Title="RegisterPage">
+
+
+
+    <ScrollView>
+        <VerticalStackLayout Padding="40" Spacing="16" VerticalOptions="Center">
+
+            
+            <Label Text="Create Account"
+                   FontSize="30"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="#2E7D32"
+                   Margin="0,40,0,8"/>
+
+            <Label Text="Register to start tracking your crops"
+                   FontSize="15"
+                   HorizontalOptions="Center"
+                   TextColor="#757575"
+                   Margin="0,0,0,24"/>
+
+            
+            <Label Text="Full Name" FontAttributes="Bold" TextColor="#424242"/>
+            <Entry x:Name="NameEntry"
+                   Placeholder="John Doe"
+                   BackgroundColor="White"
+                   TextColor="#212121"/>
+
+           
+            <Label Text="Email" FontAttributes="Bold" TextColor="#424242"/>
+            <Entry x:Name="EmailEntry"
+                   Placeholder="your@email.com"
+                   Keyboard="Email"
+                   BackgroundColor="White"
+                   TextColor="#212121"/>
+
+            
+            <Label Text="Password" FontAttributes="Bold" TextColor="#424242"/>
+            <Entry x:Name="PasswordEntry"
+                   Placeholder="Password"
+                   IsPassword="True"
+                   BackgroundColor="White"
+                   TextColor="#212121"/>
+
+           
+            <Label Text="Confirm Password" FontAttributes="Bold" TextColor="#424242"/>
+            <Entry x:Name="ConfirmPasswordEntry"
+                   Placeholder="Confirm Password"
+                   IsPassword="True"
+                   BackgroundColor="White"
+                   TextColor="#212121"/>
+
+            
+            <Label x:Name="ErrorLabel"
+                   TextColor="Red"
+                   FontSize="13"
+                   IsVisible="False"
+                   HorizontalOptions="Center"/>
+
+            
+            <Button x:Name="RegisterButton"
+                    Text="Create Account"
+                    BackgroundColor="#2E7D32"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="8"
+                    HeightRequest="50"
+                    Margin="0,8,0,0"
+                    Clicked="OnRegisterClicked"/>
+
+            
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
+                <Label Text="Already have an account?" TextColor="#757575"/>
+                <Label Text="Login"
+                       TextColor="#2E7D32"
+                       FontAttributes="Bold"
+                       TextDecorations="Underline">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnLoginTapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+
+</ContentPage>
