@@ -22,8 +22,13 @@ namespace CropTrackApp
 #endif
             builder.Services.AddSingleton<AuthService>();
             builder.Services.AddSingleton<ApiService>();
+            builder.Services.AddTransient<DashboardPage>();
+            builder.Services.AddTransient<HomePage>();
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<RegisterPage>();
+            builder.Services.AddTransient<FieldsPage>();
+            builder.Services.AddTransient<ProfilePage>();
+            
             return builder.Build();
         }
     }

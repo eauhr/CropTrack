@@ -1,15 +1,35 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<Shell
-    x:Class="CropTrackApp.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:CropTrackApp"
-    Shell.FlyoutBehavior="Disabled"
-    Title="CropTrackApp">
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:pages="clr-namespace:CropTrackApp.Pages"
+       x:Class="CropTrackApp.AppShell"
+       Shell.NavBarIsVisible="False"
+       Shell.NavBarHasShadow="True"
+       Shell.BackgroundColor="#2E7D32"
+       Shell.ForegroundColor="White"
+       Shell.TitleColor="White"
+       Shell.TabBarBackgroundColor="#2E7D32"
+       Shell.TabBarForegroundColor="White"
+       Shell.TabBarUnselectedColor="#A5D6A7"
+       Shell.TabBarTitleColor="White">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <ShellContent Title="Dashboard"
+                      ContentTemplate="{DataTemplate pages:DashboardPage}"
+                      Route="DashboardPage"/>
+
+        <ShellContent Title="Game Plan"
+                      ContentTemplate="{DataTemplate pages:HomePage}"
+                      Route="GamePlanPage"/>
+
+        <ShellContent Title="Fields &amp; Crops"
+                      ContentTemplate="{DataTemplate pages:FieldsPage}"
+                      Route="FieldsPage"/>
+
+        <ShellContent Title="Profile"
+                      ContentTemplate="{DataTemplate pages:ProfilePage}"
+                      Route="ProfilePage"/>
+
+    </TabBar>
 
 </Shell>

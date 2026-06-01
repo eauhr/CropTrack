@@ -14,13 +14,15 @@ public partial class RegisterPage : ContentPage
 
     private async void OnRegisterClicked(object sender, EventArgs e)
     {
-        string name = NameEntry.Text?.Trim();
-        string email = EmailEntry.Text?.Trim();
-        string password = PasswordEntry.Text;
-        string confirmPassword = ConfirmPasswordEntry.Text;
+        string? name = NameEntry.Text?.Trim();
+        string? email = EmailEntry.Text?.Trim();
+        string? password = PasswordEntry.Text;
+        string? confirmPassword = ConfirmPasswordEntry.Text;
 
-        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email) ||
-            string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword))
+        if (string.IsNullOrWhiteSpace(name) ||
+            string.IsNullOrWhiteSpace(email) ||
+            string.IsNullOrWhiteSpace(password) ||
+            string.IsNullOrWhiteSpace(confirmPassword))
         {
             ErrorLabel.Text = "Please fill in all fields.";
             ErrorLabel.IsVisible = true;
@@ -45,16 +47,48 @@ public partial class RegisterPage : ContentPage
         RegisterButton.Text = "Creating account...";
         ErrorLabel.IsVisible = false;
 
-        bool success = await _apiService.RegisterAsync(name, email, password);
+        try
+        {
+            bool success = await _apiService.RegisterAsync(name, email, password);
+            if (success)
+            {
+                if (Application.Current is null)
+                {
+                    ErrorLabel.Text = "App initialization failed. Please restart the app.";
+                    ErrorLabel.IsVisible = true;
+                    return;
+                }
 
-        if (success)
-        {
-            Application.Current.MainPage = new AppShell();
+                ErrorLabel.IsVisible = false;
+                Application.Current.MainPage = new AppShell();
+            }
+            else
+            {
+                int status = _apiService.LastStatusCode;
+                string? err = _apiService.LastError;
+
+                string userMessage = status switch
+                {
+                    400 => string.IsNullOrWhiteSpace(err) ? "Invalid registration data. Please check your information." : err,
+                    409 => string.IsNullOrWhiteSpace(err) ? "This email is already registered. Please use a different email or login." : err,
+                    500 => string.IsNullOrWhiteSpace(err) ? "Server error. Please try again later." : err,
+                    0 => string.IsNullOrWhiteSpace(err)
+                        ? "Cannot connect to API. Start the backend and check emulator access to port 5075."
+                        : err,
+                    _ => string.IsNullOrWhiteSpace(err) ? "Registration failed. Please try again." : err
+                };
+
+                ErrorLabel.Text = userMessage;
+                ErrorLabel.IsVisible = true;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            ErrorLabel.Text = "Registration failed. Email may already be in use.";
+            ErrorLabel.Text = $"Connection error: {ex.Message}";
             ErrorLabel.IsVisible = true;
+        }
+        finally
+        {
             RegisterButton.IsEnabled = true;
             RegisterButton.Text = "Create Account";
         }
@@ -65,4 +99,3 @@ public partial class RegisterPage : ContentPage
         await Navigation.PopAsync();
     }
 }
-

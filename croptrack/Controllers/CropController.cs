@@ -1,16 +1,16 @@
-﻿using CropTrack.Models;
+using CropTrack.Models;
 using CropTrack.Services;
-using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace CropTrack.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CropController : ControllerBase
     {
-
         private readonly ICropService _service;
 
         public CropController(ICropService service)
@@ -19,23 +19,32 @@ namespace CropTrack.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-          var crops = _service.GetAllCrops();
+            int farmerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            List<Crop> crops = await _service.GetAllCrops(farmerId);
             return Ok(crops);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var crop = _service.GetCropById(id);
-            if (crop == null) return NotFound();
+            int farmerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            Crop? crop = await _service.GetCropById(id, farmerId);
+            if (crop == null)
+            {
+                return NotFound();
+            }
+
             return Ok(crop);
         }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CropModels model)
         {
-            var crop = new Crop
+            int farmerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            Crop crop = new()
             {
                 Name = model.Name,
                 Unit = model.Unit,
@@ -44,30 +53,34 @@ namespace CropTrack.Controllers
                 OptimalTemperature = model.OptimalTemperature
             };
 
-            await _service.AddCrop(crop);
+            int cropId = await _service.AddCrop(crop, farmerId);
 
             return Ok(new
             {
                 Message = "Crop created successfully",
-                CropId = crop.CropId
+                CropId = cropId
             });
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] Crop crop)
+        public async Task<IActionResult> Update(int id, [FromBody] Crop crop)
         {
-            if (id != crop.CropId) return BadRequest("ID mismatch");
+            if (id != crop.CropId)
+            {
+                return BadRequest("ID mismatch");
+            }
 
-            _service.UpdateCrop(crop);
-            return Ok("Crop updated successfully");
+            int farmerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            bool updated = await _service.UpdateCrop(crop, farmerId);
+            return updated ? Ok("Crop updated successfully") : NotFound("Crop not found.");
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _service.DeleteCrop(id);
-            return Ok("Crop deleted successfully");
+            int farmerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            bool deleted = await _service.DeleteCrop(id, farmerId);
+            return deleted ? Ok("Crop deleted successfully") : NotFound("Crop not found.");
         }
-
     }
 }

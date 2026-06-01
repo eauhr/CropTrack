@@ -26,6 +26,14 @@ namespace CropTrack.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterFarmerRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+                return BadRequest(string.Join("; ", errors));
+            }
+
             try
             {
                 var farmer = await _farmerService.RegisterAndReturnFarmer(request);
@@ -56,6 +64,14 @@ namespace CropTrack.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginFarmerRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+                return BadRequest(string.Join("; ", errors));
+            }
+
             try
             {
                 var farmer = await _farmerService.Login(request);
@@ -107,9 +123,18 @@ namespace CropTrack.Controllers
                 new Claim(ClaimTypes.Name, farmer.Name)
             };
 
+            var configuredKey = _config["Jwt:Key"];
+            var jwtKey = string.IsNullOrWhiteSpace(configuredKey)
+                ? Environment.GetEnvironmentVariable("JWT_KEY")
+                : configuredKey;
+            if (string.IsNullOrWhiteSpace(jwtKey))
+            {
+                // Dev fallback
+                jwtKey = "DevCropTrackSecretKeyChangeThisInProd!";
+            }
+
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_config["Jwt:Key"]!)
-            );
+                Encoding.UTF8.GetBytes(jwtKey));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

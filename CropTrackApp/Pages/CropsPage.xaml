@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CropTrackApp.Pages.CropsPage"
+             BackgroundColor="#F3F5F7"
+             Title="Seeds and Crops">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" Padding="16">
+        <Label Grid.Row="0"
+               Text="Seeds and Crops"
+               FontSize="28"
+               FontAttributes="Bold"
+               TextColor="#1E2A33"
+               Margin="0,0,0,12" />
+
+        <SearchBar Grid.Row="1"
+                   x:Name="CropSearchBar"
+                   Placeholder="Search by crop name"
+                   TextChanged="OnSearchChanged"
+                   Margin="0,0,0,8" />
+
+        <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="8" Margin="0,0,0,10">
+            <Picker Grid.Column="0"
+                    x:Name="GrowthFilterPicker"
+                    Title="Growth filter"
+                    SelectedIndexChanged="OnFilterChanged">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>All growth</x:String>
+                        <x:String>Short (0-90)</x:String>
+                        <x:String>Medium (91-150)</x:String>
+                        <x:String>Long (151+)</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+            <Picker Grid.Column="1"
+                    x:Name="SortPicker"
+                    Title="Sort"
+                    SelectedIndexChanged="OnFilterChanged">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Alphabetical</x:String>
+                        <x:String>Highest yield</x:String>
+                        <x:String>Shortest growth</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+        </Grid>
+
+        <Button Grid.Row="3"
+                Text="Add Crop"
+                Clicked="OnAddCropClicked"
+                BackgroundColor="#2E7D32"
+                TextColor="White"
+                CornerRadius="10"
+                HeightRequest="42"
+                Margin="0,0,0,10" />
+
+        <Grid Grid.Row="4">
+            <RefreshView x:Name="CropsRefreshView" Refreshing="OnRefreshRequested">
+                <CollectionView x:Name="CropsCollectionView"
+                                SelectionMode="Single"
+                                SelectionChanged="OnCropSelected">
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="8" Margin="0,80,0,0">
+                            <Label Text="No crops yet" FontSize="20" FontAttributes="Bold" TextColor="#4F5D6B" HorizontalOptions="Center" />
+                            <Label Text="Add your first crop to start planning." TextColor="#6A7988" HorizontalOptions="Center" />
+                            <Button Text="Add your first crop" Clicked="OnAddCropClicked" BackgroundColor="#2E7D32" TextColor="White" CornerRadius="10" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <SwipeView>
+                                <SwipeView.LeftItems>
+                                    <SwipeItems>
+                                        <SwipeItem Text="Edit"
+                                                   BackgroundColor="#1565C0"
+                                                   Invoked="OnEditCropSwipeInvoked"
+                                                   CommandParameter="{Binding .}" />
+                                    </SwipeItems>
+                                </SwipeView.LeftItems>
+                                <SwipeView.RightItems>
+                                    <SwipeItems>
+                                        <SwipeItem Text="Delete"
+                                                   BackgroundColor="#C62828"
+                                                   Invoked="OnDeleteCropSwipeInvoked"
+                                                   CommandParameter="{Binding .}" />
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+                                <Border Margin="0,0,0,10"
+                                        BackgroundColor="White"
+                                        Stroke="#E3E8ED"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 14"
+                                        Padding="12">
+                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                        <Border BackgroundColor="#E8F5E9" StrokeShape="RoundRectangle 10" WidthRequest="48" HeightRequest="48" Padding="0">
+                                            <Label Text="{Binding CropBadge}" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold" TextColor="#2E7D32" />
+                                        </Border>
+                                        <VerticalStackLayout Grid.Column="1" Spacing="3">
+                                            <Label Text="{Binding Name}" FontSize="17" FontAttributes="Bold" TextColor="#1E2A33" />
+                                            <Label Text="{Binding Summary}" FontSize="13" TextColor="#60707E" />
+                                            <Label Text="{Binding Metrics}" FontSize="12" TextColor="#455565" />
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </Border>
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+
+        </Grid>
+    </Grid>
+</ContentPage>

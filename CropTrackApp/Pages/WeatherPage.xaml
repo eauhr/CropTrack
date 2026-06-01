@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CropTrackApp.Pages.WeatherPage"
+             BackgroundColor="#F3F5F7"
+             Title="Weather">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" Padding="16">
+        <Label Grid.Row="0"
+               Text="Weather and Regions"
+               FontSize="28"
+               FontAttributes="Bold"
+               TextColor="#1E2A33"
+               Margin="0,0,0,12" />
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6">
+            <Picker x:Name="RegionPicker"
+                    Grid.Column="0"
+                    Title="Select region"
+                    ItemDisplayBinding="{Binding Name}" />
+            <Button Grid.Column="1"
+                    Text="Fetch"
+                    Clicked="OnFetchClicked"
+                    BackgroundColor="#0288D1"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="42" />
+            <Button Grid.Column="2"
+                    Text="+ Region"
+                    Clicked="OnAddRegionClicked"
+                    BackgroundColor="#455A64"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="42" />
+        </Grid>
+
+        <Border Grid.Row="2"
+                Margin="0,10,0,8"
+                BackgroundColor="White"
+                Stroke="#E3E8ED"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 14"
+                Padding="12">
+            <VerticalStackLayout Spacing="4">
+                <Label x:Name="CurrentSummaryLabel" Text="Current: N/A" FontAttributes="Bold" TextColor="#1E2A33" />
+                <Label x:Name="RainfallSummaryLabel" Text="Rainfall: N/A" TextColor="#5B6A78" />
+                <Label x:Name="ForecastSummaryLabel" Text="Forecast: N/A" TextColor="#5B6A78" />
+                <Label x:Name="CriticalSummaryLabel" Text="Critical alerts: none" TextColor="#C62828" />
+            </VerticalStackLayout>
+        </Border>
+
+        <Button Grid.Row="3"
+                Text="Add Weather Log"
+                Clicked="OnAddWeatherLogClicked"
+                BackgroundColor="#2E7D32"
+                TextColor="White"
+                CornerRadius="10"
+                Margin="0,0,0,8" />
+
+        <RefreshView Grid.Row="4" x:Name="WeatherRefreshView" Refreshing="OnRefreshRequested">
+            <CollectionView x:Name="WeatherCollectionView" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="8" Margin="0,80,0,0">
+                        <Label Text="No weather logs yet" FontSize="20" FontAttributes="Bold" TextColor="#4F5D6B" HorizontalOptions="Center" />
+                        <Label Text="Fetch logs or add a new weather record." TextColor="#6A7988" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <SwipeView>
+                            <SwipeView.LeftItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Edit"
+                                               BackgroundColor="#1565C0"
+                                               Invoked="OnEditLogSwipeInvoked"
+                                               CommandParameter="{Binding .}" />
+                                </SwipeItems>
+                            </SwipeView.LeftItems>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Delete"
+                                               BackgroundColor="#C62828"
+                                               Invoked="OnDeleteLogSwipeInvoked"
+                                               CommandParameter="{Binding .}" />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <Border Margin="0,0,0,10"
+                                    BackgroundColor="White"
+                                    Stroke="#E3E8ED"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 14"
+                                    Padding="12">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label Text="{Binding DateText}" FontAttributes="Bold" TextColor="#1E2A33" />
+                                        <Label Text="{Binding Forecast}" TextColor="#5B6A78" />
+                                    </VerticalStackLayout>
+                                    <VerticalStackLayout Grid.Column="1" HorizontalOptions="End" Spacing="2">
+                                        <Label Text="{Binding TemperatureText}" HorizontalTextAlignment="End" TextColor="#1E2A33" />
+                                        <Label Text="{Binding RainfallText}" HorizontalTextAlignment="End" TextColor="#1E2A33" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

@@ -13,11 +13,13 @@ namespace CropTrack.Controllers
     {
         private readonly IFieldCropService _fieldCropService;
         private readonly IFieldService _fieldService;
+        private readonly ICropService _cropService;
 
-        public FieldCropController(IFieldCropService fieldCropService, IFieldService fieldService)
+        public FieldCropController(IFieldCropService fieldCropService, IFieldService fieldService, ICropService cropService)
         {
             _fieldCropService = fieldCropService;
             _fieldService = fieldService;
+            _cropService = cropService;
         }
 
         // GET api/FieldCrop/{fieldId}
@@ -60,6 +62,12 @@ namespace CropTrack.Controllers
             if (field == null)
                 return NotFound("Field not found or does not belong to you.");
 
+            Crop? crop = await _cropService.GetCropById(request.CropId, farmerId);
+            if (crop == null)
+            {
+                return BadRequest("Crop not found or does not belong to you.");
+            }
+
             var fieldCrop = new FieldCrop
             {
                 FieldId = request.FieldId,
@@ -90,9 +98,16 @@ namespace CropTrack.Controllers
             if (field == null)
                 return Forbid();
 
+            Crop? crop = await _cropService.GetCropById(request.CropId, farmerId);
+            if (crop == null)
+            {
+                return BadRequest("Crop not found or does not belong to you.");
+            }
+
             var fieldCrop = new FieldCrop
             {
                 FieldCropId = id,
+                FieldId = existing.FieldId,
                 CropId = request.CropId,
                 QuantityInTons = request.QuantityInTons,
                 PlantingDate = request.PlantingDate,

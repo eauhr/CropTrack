@@ -19,7 +19,7 @@ namespace CropTrack.Services
         {
             Farmer existingFarmer = await _farmerRepository.GetByEmail(request.Email);
             if (existingFarmer != null)
-                return false;
+                throw new Exception("Email already in use");
 
             var passwordHasher = HashPassword(request.Password);
 
@@ -53,7 +53,7 @@ namespace CropTrack.Services
         {
             Farmer existingFarmer = await _farmerRepository.GetByEmail(request.Email);
             if (existingFarmer != null)
-                throw new Exception("Farmer already exists");
+                throw new Exception("Email already in use");
 
             var passwordHasher = HashPassword(request.Password);
 

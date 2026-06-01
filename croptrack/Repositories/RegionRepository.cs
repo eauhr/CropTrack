@@ -1,4 +1,4 @@
-﻿using CropTrack.Data;
+using CropTrack.Data;
 using CropTrack.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,14 +13,18 @@ namespace CropTrack.Repositories
             _context = context;
         }
 
-        public async Task<List<Region>> GetAll()
+        public async Task<List<Region>> GetAllByFarmerId(int farmerId)
         {
-            return await _context.Regions.ToListAsync();
+            return await _context.Regions
+                .Where(r => r.FarmerId == farmerId)
+                .OrderBy(r => r.Name)
+                .ToListAsync();
         }
 
-        public async Task<Region> GetById(int id)
+        public async Task<Region?> GetByIdForFarmer(int id, int farmerId)
         {
-            return await _context.Regions.FindAsync(id);
+            return await _context.Regions
+                .FirstOrDefaultAsync(r => r.RegionId == id && r.FarmerId == farmerId);
         }
 
         public async Task Add(Region region)

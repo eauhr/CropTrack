@@ -1,13 +1,14 @@
-﻿using CropTrack.Models;
+using CropTrack.Models;
 using CropTrack.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CropTrack.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RegionController : ControllerBase
     {
         private readonly IRegionService _regionService;
@@ -17,55 +18,71 @@ namespace CropTrack.Controllers
             _regionService = regionService;
         }
 
-        // GET api/Region
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
-            List<Region> regions = await _regionService.GetAllRegions();
+            int farmerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            List<Region> regions = await _regionService.GetAllRegions(farmerId);
             return Ok(regions);
         }
 
-        // GET api/Region/{id}
         [HttpGet("{id}")]
-        [AllowAnonymous]
         public async Task<IActionResult> GetById(int id)
         {
-            Region region = await _regionService.GetRegionById(id);
+            int farmerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            Region? region = await _regionService.GetRegionById(id, farmerId);
             if (region == null)
+            {
                 return NotFound("Region not found.");
+            }
 
             return Ok(region);
         }
 
-        // POST api/Region
         [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> Create([FromBody] Region region)
+        public async Task<IActionResult> Create([FromBody] RegionRequest request)
         {
-            await _regionService.AddRegion(region);
-            return Ok(new { Message = "Region created successfully.", RegionId = region.RegionId });
+            if (string.IsNullOrWhiteSpace(request.Name))
+            {
+                return BadRequest("Region name is required.");
+            }
+
+            int farmerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            Region region = new() { Name = request.Name.Trim() };
+            int regionId = await _regionService.AddRegion(region, farmerId);
+
+            return Ok(new { Message = "Region created successfully.", RegionId = regionId });
         }
 
-        // PUT api/Region/{id}
         [HttpPut("{id}")]
-        [Authorize]
-        public async Task<IActionResult> Update(int id, [FromBody] Region region)
+        public async Task<IActionResult> Update(int id, [FromBody] RegionRequest request)
         {
-            if (id != region.RegionId)
-                return BadRequest("ID mismatch.");
+            if (string.IsNullOrWhiteSpace(request.Name))
+            {
+                return BadRequest("Region name is required.");
+            }
 
-            await _regionService.UpdateRegion(region);
-            return Ok("Region updated successfully.");
+            int farmerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            bool updated = await _regionService.UpdateRegion(new Region
+            {
+                RegionId = id,
+                Name = request.Name.Trim()
+            }, farmerId);
+
+            return updated ? Ok("Region updated successfully.") : NotFound("Region not found.");
         }
 
-        // DELETE api/Region/{id}
         [HttpDelete("{id}")]
-        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
-            bool result = await _regionService.DeleteRegion(id);
-            return result ? Ok("Region deleted successfully.") : NotFound("Region not found.");
+            int farmerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            bool deleted = await _regionService.DeleteRegion(id, farmerId);
+            return deleted ? Ok("Region deleted successfully.") : NotFound("Region not found.");
         }
+    }
+
+    public class RegionRequest
+    {
+        public string Name { get; set; } = string.Empty;
     }
 }

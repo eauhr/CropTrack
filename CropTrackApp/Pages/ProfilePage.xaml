@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CropTrackApp.Pages.ProfilePage"
+             BackgroundColor="#F3F5F7"
+             Title="Profile">
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+            <Border BackgroundColor="White" Stroke="#E3E8ED" StrokeThickness="1" StrokeShape="RoundRectangle 14" Padding="14">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Profile" FontSize="24" FontAttributes="Bold" TextColor="#1E2A33" />
+                    <Label x:Name="NameLabel" FontSize="20" FontAttributes="Bold" TextColor="#1E2A33" />
+                    <Label x:Name="EmailLabel" FontSize="14" TextColor="#5B6A78" />
+                    <Label x:Name="WeeklyCheckLabel" FontSize="12" TextColor="#1B5E20" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border BackgroundColor="White" Stroke="#E3E8ED" StrokeShape="RoundRectangle 14" Padding="14">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Units and Measurements" FontSize="17" FontAttributes="Bold" TextColor="#1E2A33" />
+                    <Picker x:Name="TemperatureUnitPicker" Title="Temperature unit">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Celsius</x:String>
+                                <x:String>Fahrenheit</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                    <Picker x:Name="AreaUnitPicker" Title="Area unit">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Acres</x:String>
+                                <x:String>Hectares</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                    <Picker x:Name="WeightUnitPicker" Title="Weight unit">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Tons</x:String>
+                                <x:String>Kilograms</x:String>
+                                <x:String>Pounds</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                    <Picker x:Name="RainfallUnitPicker" Title="Rainfall unit">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Millimeters</x:String>
+                                <x:String>Inches</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border BackgroundColor="White" Stroke="#E3E8ED" StrokeShape="RoundRectangle 14" Padding="14">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Notifications" FontSize="17" FontAttributes="Bold" TextColor="#1E2A33" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Harvest reminders" VerticalTextAlignment="Center" />
+                        <Switch x:Name="HarvestReminderSwitch" Grid.Column="1" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Weather alerts" VerticalTextAlignment="Center" />
+                        <Switch x:Name="WeatherAlertSwitch" Grid.Column="1" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Price updates" VerticalTextAlignment="Center" />
+                        <Switch x:Name="PriceUpdateSwitch" Grid.Column="1" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border BackgroundColor="White" Stroke="#E3E8ED" StrokeShape="RoundRectangle 14" Padding="14">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Display" FontSize="17" FontAttributes="Bold" TextColor="#1E2A33" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Dark mode" VerticalTextAlignment="Center" />
+                        <Switch x:Name="DarkModeSwitch" Grid.Column="1" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Button Text="Save Settings"
+                    Clicked="OnSaveSettingsClicked"
+                    BackgroundColor="#1565C0"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="10" />
+
+            <Button Text="Logout"
+                    Clicked="OnLogoutClicked"
+                    BackgroundColor="#C62828"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="10" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

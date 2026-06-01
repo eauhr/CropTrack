@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace CropTrackApp.Services
 {
@@ -23,36 +17,45 @@ namespace CropTrackApp.Services
             await SecureStorage.SetAsync(FarmerEmailKey, email);
         }
 
-        public async Task<string> GetTokenAsync()
+        public async Task<string?> GetTokenAsync()
         {
             return await SecureStorage.GetAsync(TokenKey);
         }
 
         public async Task<int> GetFarmerIdAsync()
         {
-            string value = await SecureStorage.GetAsync(FarmerIdKey);
+            string? value = await SecureStorage.GetAsync(FarmerIdKey);
             return int.TryParse(value, out int id) ? id : 0;
         }
 
-        public async Task<string> GetFarmerNameAsync()
+        public async Task<string?> GetFarmerNameAsync()
         {
             return await SecureStorage.GetAsync(FarmerNameKey);
         }
 
-        public async Task<string> GetFarmerEmailAsync()
+        public async Task<string?> GetFarmerEmailAsync()
         {
             return await SecureStorage.GetAsync(FarmerEmailKey);
         }
 
         public async Task<bool> IsLoggedInAsync()
         {
-            string token = await GetTokenAsync();
-            if (string.IsNullOrEmpty(token))
+            string? token = await GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
                 return false;
+            }
 
-            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-            JwtSecurityToken jwt = handler.ReadJwtToken(token);
-            return jwt.ValidTo > DateTime.UtcNow;
+            try
+            {
+                JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+                JwtSecurityToken jwt = handler.ReadJwtToken(token);
+                return jwt.ValidTo > DateTime.UtcNow;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public void Logout()

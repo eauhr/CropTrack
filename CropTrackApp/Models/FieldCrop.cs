@@ -11,7 +11,7 @@ namespace CropTrackApp.Models
         public int FieldCropId { get; set; }
         public int FieldId { get; set; }
         public int CropId { get; set; }
-        public string CropName { get; set; }
+        public string CropName { get; set; } = string.Empty;
         public decimal QuantityInTons { get; set; }
         public DateTime PlantingDate { get; set; }
         public DateTime HarvestDate { get; set; }

@@ -1,4 +1,4 @@
-﻿using CropTrack.Models;
+using CropTrack.Models;
 using CropTrack.Repositories;
 
 namespace CropTrack.Services
@@ -12,33 +12,51 @@ namespace CropTrack.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<Crop>> GetAllCrops()
+        public async Task<List<Crop>> GetAllCrops(int farmerId)
         {
-            return await _repository.GetAll();
+            return await _repository.GetAllByFarmerId(farmerId);
         }
 
-        public async Task<Crop> GetCropById(int id)
+        public async Task<Crop?> GetCropById(int id, int farmerId)
         {
-            return await _repository.GetById(id);
+            return await _repository.GetByIdForFarmer(id, farmerId);
         }
 
-        public async Task AddCrop(Crop crop)
+        public async Task<int> AddCrop(Crop crop, int farmerId)
         {
+            crop.FarmerId = farmerId;
             await _repository.Add(crop);
+            return crop.CropId;
         }
 
-        public async Task UpdateCrop(Crop crop)
+        public async Task<bool> UpdateCrop(Crop crop, int farmerId)
         {
-            await _repository.Update(crop);
-        }
-
-        public async Task DeleteCrop(int id)
-        {
-            Crop crop = await _repository.GetById(id);
-            if (crop != null)
+            Crop? existing = await _repository.GetByIdForFarmer(crop.CropId, farmerId);
+            if (existing == null)
             {
-                await _repository.Delete(crop);
+                return false;
             }
+
+            existing.Name = crop.Name;
+            existing.Unit = crop.Unit;
+            existing.AvgGrowthDays = crop.AvgGrowthDays;
+            existing.YieldPerAcre = crop.YieldPerAcre;
+            existing.OptimalTemperature = crop.OptimalTemperature;
+
+            await _repository.Update(existing);
+            return true;
+        }
+
+        public async Task<bool> DeleteCrop(int id, int farmerId)
+        {
+            Crop? existing = await _repository.GetByIdForFarmer(id, farmerId);
+            if (existing == null)
+            {
+                return false;
+            }
+
+            await _repository.Delete(existing);
+            return true;
         }
     }
 }

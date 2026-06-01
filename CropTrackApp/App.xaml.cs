@@ -1,15 +1,13 @@
-﻿using CropTrackApp.Services;
-using CropTrackApp.Pages;
+﻿using CropTrackApp.Pages;
 
 namespace CropTrackApp
 {
     public partial class App : Application
     {
-        public App(ApiService apiService)
+        public App(LoginPage loginPage)
         {
             InitializeComponent();
-
-            MainPage = new NavigationPage(new LoginPage(apiService));
+            MainPage = new NavigationPage(loginPage);
         }
     }
 }

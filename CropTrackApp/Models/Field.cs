@@ -11,8 +11,8 @@ namespace CropTrackApp.Models
         public int FieldId { get; set; }
         public int FarmerId { get; set; }
         public int RegionId { get; set; }
-        public string Name { get; set; }
-        public string Location { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Location { get; set; } = string.Empty;
         public decimal Acres { get; set; }
     }
 }

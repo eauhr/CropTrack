@@ -15,17 +15,31 @@ namespace CropTrack.Data
         public DbSet<Farmer> Farmers { get; set; }
         public DbSet<Region> Regions { get; set; }
         public DbSet<WeatherLog> WeatherLogs { get; set; }
+        public DbSet<Produce> Produces { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=fieldtrack;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=True;");
+                optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=fieldtrack;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=True;MultipleActiveResultSets=true;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            foreach (var property in modelBuilder.Model.GetEntityTypes()
+        .SelectMany(t => t.GetProperties())
+        .Where(p => p.ClrType == typeof(decimal) || p.ClrType == typeof(decimal?)))
+            {
+                property.SetColumnType("decimal(18,2)");
+            }
+
+            modelBuilder.Entity<Farmer>(entity =>
+            {
+                entity.HasIndex(e => e.Email).IsUnique();
+            });
+
             modelBuilder.Entity<FieldCrop>()
                 .HasOne(fc => fc.Field)
                 .WithMany(f => f.FieldCrops)
@@ -46,6 +60,16 @@ namespace CropTrack.Data
                 .WithMany(fm => fm.Fields)
                 .HasForeignKey(f => f.FarmerId);
 
+            modelBuilder.Entity<Crop>()
+                .HasOne(c => c.Farmer)
+                .WithMany(f => f.Crops)
+                .HasForeignKey(c => c.FarmerId);
+
+            modelBuilder.Entity<Region>()
+                .HasOne(r => r.Farmer)
+                .WithMany(f => f.Regions)
+                .HasForeignKey(r => r.FarmerId);
+
             modelBuilder.Entity<Field>()
                 .HasOne(f => f.Region)
                 .WithMany(r => r.Fields)
@@ -55,6 +79,12 @@ namespace CropTrack.Data
                 .HasOne(wl => wl.Region)
                 .WithMany(r => r.WeatherLogs)
                 .HasForeignKey(wl => wl.RegionId);
+
+            modelBuilder.Entity<Produce>()
+                .Property(p => p.WaterIntensity)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Produce>().HasData(SeedData.Produces);
         }
     }
 }

@@ -1,9 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace CropTrackApp.Models
 {
     public class WeatherLog
@@ -13,7 +7,6 @@ namespace CropTrackApp.Models
         public DateTime DateRecorded { get; set; }
         public decimal Temperature { get; set; }
         public decimal Rainfall { get; set; }
-        public string Forecast { get; set; }
-    
-}
+        public string Forecast { get; set; } = string.Empty;
+    }
 }
