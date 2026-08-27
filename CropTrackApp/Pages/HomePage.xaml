@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CropTrackApp.Pages.HomePage"
+             BackgroundColor="#F3F5F7"
+             Title="Game Plan">
+    <RefreshView x:Name="DashboardRefreshView" Refreshing="OnRefreshRequested">
+        <ScrollView>
+            <VerticalStackLayout Padding="20,20,20,36" Spacing="16">
+                <VerticalStackLayout Spacing="2">
+                    <Label x:Name="WelcomeTitleLabel"
+                           FontSize="28"
+                           FontAttributes="Bold"
+                           TextColor="#1E2A33"
+                           Text="Welcome back" />
+                    <Label x:Name="WelcomeSubtitleLabel"
+                           FontSize="14"
+                           TextColor="#5B6975"
+                           Text="Tasks, season planning, and next-step decisions" />
+                </VerticalStackLayout>
+
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                    <Border Grid.Row="0" Grid.Column="0" BackgroundColor="White" Stroke="#E3E8ED" StrokeThickness="1" StrokeShape="RoundRectangle 14">
+                        <VerticalStackLayout Padding="14" Spacing="4">
+                            <Label Text="Total Crops" FontSize="12" TextColor="#687887" />
+                            <Label x:Name="TotalCropsLabel" Text="0" FontSize="26" FontAttributes="Bold" TextColor="#0D1B2A" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Row="0" Grid.Column="1" BackgroundColor="White" Stroke="#E3E8ED" StrokeThickness="1" StrokeShape="RoundRectangle 14">
+                        <VerticalStackLayout Padding="14" Spacing="4">
+                            <Label Text="Total Fields" FontSize="12" TextColor="#687887" />
+                            <Label x:Name="TotalFieldsLabel" Text="0" FontSize="26" FontAttributes="Bold" TextColor="#0D1B2A" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Row="1" Grid.Column="0" BackgroundColor="White" Stroke="#E3E8ED" StrokeThickness="1" StrokeShape="RoundRectangle 14">
+                        <VerticalStackLayout Padding="14" Spacing="4">
+                            <Label Text="Total Acreage" FontSize="12" TextColor="#687887" />
+                            <Label x:Name="TotalAcreageLabel" Text="0.0" FontSize="26" FontAttributes="Bold" TextColor="#0D1B2A" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Row="1" Grid.Column="1" BackgroundColor="White" Stroke="#E3E8ED" StrokeThickness="1" StrokeShape="RoundRectangle 14">
+                        <VerticalStackLayout Padding="14" Spacing="4">
+                            <Label Text="Active Plantings" FontSize="12" TextColor="#687887" />
+                            <Label x:Name="ActivePlantingsLabel" Text="0" FontSize="26" FontAttributes="Bold" TextColor="#0D1B2A" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <Border BackgroundColor="White" Stroke="#E3E8ED" StrokeThickness="1" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Padding="14" Spacing="10">
+                        <Label Text="Field and Crop Plan" FontSize="18" FontAttributes="Bold" TextColor="#1E2A33" />
+                        <Label x:Name="PlanCoverageLabel"
+                               Text="Loading field crop plan..."
+                               FontSize="13"
+                               TextColor="#5B6975" />
+                        <CollectionView x:Name="FieldCropPlanCollectionView" SelectionMode="None">
+                            <CollectionView.EmptyView>
+                                <Label Text="No plantings yet. Add crops to fields to build your game plan." TextColor="#66757F" FontSize="13" />
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,4,0,0" BackgroundColor="#F8FAFC" Stroke="#DDE5ED" StrokeShape="RoundRectangle 10" Padding="10">
+                                        <VerticalStackLayout Spacing="2">
+                                            <Label Text="{Binding Title}" FontSize="14" FontAttributes="Bold" TextColor="#1E2A33" />
+                                            <Label Text="{Binding Detail}" FontSize="12" TextColor="#465564" />
+                                            <Label Text="{Binding Status}" FontSize="12" TextColor="#1B5E20" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" Stroke="#E3E8ED" StrokeThickness="1" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Padding="14" Spacing="10">
+                        <Label Text="Task Progress" FontSize="18" FontAttributes="Bold" TextColor="#1E2A33" />
+                        <Label x:Name="TaskProgressSummaryLabel"
+                               Text="Loading tasks..."
+                               FontSize="13"
+                               TextColor="#5B6975" />
+                        <CollectionView x:Name="TaskProgressCollectionView" SelectionMode="None">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8" Margin="0,2,0,2">
+                                        <CheckBox IsChecked="{Binding IsDone}" CheckedChanged="OnTaskDoneChanged" />
+                                        <VerticalStackLayout Grid.Column="1" Spacing="1">
+                                            <Label Text="{Binding Title}" FontSize="14" FontAttributes="Bold" TextColor="#1E2A33" />
+                                            <Label Text="{Binding Detail}" FontSize="12" TextColor="#5A6773" />
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" Stroke="#E3E8ED" StrokeThickness="1" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Padding="14" Spacing="10">
+                        <Label Text="Daily Farm Brief" FontSize="18" FontAttributes="Bold" TextColor="#1E2A33" />
+                        <Label Text="Built for growers: focus on what matters today."
+                               FontSize="13"
+                               TextColor="#5B6975" />
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                            <Border Grid.Column="0" BackgroundColor="#F8FAFC" Stroke="#DDE5ED" StrokeShape="RoundRectangle 10" Padding="10">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="Setup" FontSize="12" TextColor="#5E6B77" />
+                                    <Label x:Name="SetupScoreLabel" Text="0%" FontSize="24" FontAttributes="Bold" TextColor="#0D1B2A" />
+                                </VerticalStackLayout>
+                            </Border>
+                            <Border Grid.Column="1" BackgroundColor="#FFF9F5" Stroke="#FFD7C2" StrokeShape="RoundRectangle 10" Padding="10">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="Risk" FontSize="12" TextColor="#9A3412" />
+                                    <Label x:Name="RiskScoreLabel" Text="0/100" FontSize="24" FontAttributes="Bold" TextColor="#9A3412" />
+                                </VerticalStackLayout>
+                            </Border>
+                            <Border Grid.Column="2" BackgroundColor="#F1F8F2" Stroke="#CAE6CF" StrokeShape="RoundRectangle 10" Padding="10">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="Opportunity" FontSize="12" TextColor="#1B5E20" />
+                                    <Label x:Name="OpportunityScoreLabel" Text="0/100" FontSize="24" FontAttributes="Bold" TextColor="#1B5E20" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+                        <Border BackgroundColor="#F6F9FC" Stroke="#DDE5ED" StrokeShape="RoundRectangle 10" Padding="10">
+                            <Label x:Name="DailyBriefLabel"
+                                   Text="We are preparing your morning brief."
+                                   FontSize="13"
+                                   TextColor="#32404C" />
+                        </Border>
+                        <Button Text="Refresh Brief"
+                                Clicked="OnRefreshBriefClicked"
+                                BackgroundColor="#1B5E20"
+                                TextColor="White"
+                                CornerRadius="10"
+                                HeightRequest="40" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" Stroke="#E3E8ED" StrokeThickness="1" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Padding="14" Spacing="10">
+                        <Label Text="Season Planner" FontSize="18" FontAttributes="Bold" TextColor="#1E2A33" />
+                        <Label x:Name="SeasonWindowSummaryLabel"
+                               Text="Planning next crop windows..."
+                               FontSize="13"
+                               TextColor="#5B6975" />
+
+                        <Label Text="Next Planting Windows" FontSize="14" FontAttributes="Bold" TextColor="#1E2A33" />
+                        <CollectionView x:Name="PlantingWindowsCollectionView" SelectionMode="None">
+                            <CollectionView.EmptyView>
+                                <Label Text="Add crops to generate planting windows." TextColor="#66757F" FontSize="13" />
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,4,0,0" BackgroundColor="#F8FAFC" Stroke="#DDE5ED" StrokeShape="RoundRectangle 10" Padding="10">
+                                        <VerticalStackLayout Spacing="2">
+                                            <Label Text="{Binding CropName}" FontSize="14" FontAttributes="Bold" TextColor="#1E2A33" />
+                                            <Label Text="{Binding WindowText}" FontSize="12" TextColor="#465564" />
+                                            <Label Text="{Binding HarvestText}" FontSize="12" TextColor="#465564" />
+                                            <Label Text="{Binding Guidance}" FontSize="12" TextColor="#1B5E20" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <Label Text="Harvest Calendar (Next 30 Days)" FontSize="14" FontAttributes="Bold" TextColor="#1E2A33" />
+                        <CollectionView x:Name="HarvestTimelineCollectionView" SelectionMode="None">
+                            <CollectionView.EmptyView>
+                                <Label Text="No harvests scheduled in the next 30 days." TextColor="#66757F" FontSize="13" />
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,4,0,0" BackgroundColor="#FFF8F2" Stroke="#FFD7C2" StrokeShape="RoundRectangle 10" Padding="10">
+                                        <VerticalStackLayout Spacing="2">
+                                            <Label Text="{Binding Title}" FontSize="14" FontAttributes="Bold" TextColor="#9A3412" />
+                                            <Label Text="{Binding Detail}" FontSize="12" TextColor="#9A3412" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <Label Text="Weekly Workload Forecast" FontSize="14" FontAttributes="Bold" TextColor="#1E2A33" />
+                        <CollectionView x:Name="WorkloadForecastCollectionView" SelectionMode="None">
+                            <CollectionView.EmptyView>
+                                <Label Text="Need crops and plantings to forecast workload." TextColor="#66757F" FontSize="13" />
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,4,0,0" BackgroundColor="#F1F8F2" Stroke="#CAE6CF" StrokeShape="RoundRectangle 10" Padding="10">
+                                        <VerticalStackLayout Spacing="2">
+                                            <Label Text="{Binding WeekLabel}" FontSize="14" FontAttributes="Bold" TextColor="#1B5E20" />
+                                            <Label Text="{Binding TasksText}" FontSize="12" TextColor="#1B5E20" />
+                                            <Label Text="{Binding CapacityHint}" FontSize="12" TextColor="#2F4F2F" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" Stroke="#E3E8ED" StrokeThickness="1" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Padding="14" Spacing="10">
+                        <Label Text="What To Do Today" FontSize="18" FontAttributes="Bold" TextColor="#1E2A33" />
+                        <Label x:Name="PlanSummaryLabel"
+                               Text="Building your plan..."
+                               FontSize="13"
+                               TextColor="#5B6975" />
+                        <CollectionView x:Name="TodayPlanCollectionView" SelectionMode="None">
+                            <CollectionView.EmptyView>
+                                <Label Text="No urgent tasks. Great work." TextColor="#66757F" FontSize="13" />
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,4,0,0" BackgroundColor="#F8FAFC" Stroke="#E2E8F0" StrokeShape="RoundRectangle 10" Padding="10">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                            <VerticalStackLayout Spacing="2">
+                                                <Label Text="{Binding Title}" FontSize="14" FontAttributes="Bold" TextColor="#1E2A33" />
+                                                <Label Text="{Binding Detail}" FontSize="12" TextColor="#5A6773" />
+                                            </VerticalStackLayout>
+                                            <Button Grid.Column="1"
+                                                    Text="{Binding ActionText}"
+                                                    Clicked="OnTaskActionClicked"
+                                                    CommandParameter="{Binding ActionKey}"
+                                                    HeightRequest="34"
+                                                    Padding="10,0"
+                                                    BackgroundColor="#1565C0"
+                                                    TextColor="White"
+                                                    CornerRadius="8" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                        <Border BackgroundColor="#EEF7F0" Stroke="#C9E7CF" StrokeShape="RoundRectangle 10" Padding="10">
+                            <Label x:Name="DecisionInsightLabel"
+                                   Text="Decision support will appear here."
+                                   FontSize="13"
+                                   TextColor="#1B5E20" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" Stroke="#E3E8ED" StrokeThickness="1" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Padding="14" Spacing="10">
+                        <Label Text="Weather Widget" FontSize="18" FontAttributes="Bold" TextColor="#1E2A33" />
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <Picker x:Name="WeatherRegionPicker"
+                                    Grid.Column="0"
+                                    Title="Select region"
+                                    ItemDisplayBinding="{Binding Name}"
+                                    SelectedIndexChanged="OnWeatherRegionChanged" />
+                            <Button Grid.Column="1"
+                                    Text="Fetch"
+                                    Clicked="OnFetchWeatherClicked"
+                                    BackgroundColor="#2E7D32"
+                                    TextColor="White"
+                                    CornerRadius="10"
+                                    HeightRequest="42" />
+                        </Grid>
+                        <Label x:Name="CurrentWeatherLabel" Text="Current conditions: N/A" FontSize="14" TextColor="#32404C" />
+                        <Label x:Name="TemperatureRangeLabel" Text="Today's range: N/A" FontSize="14" TextColor="#32404C" />
+                        <Label x:Name="CriticalAlertsLabel" Text="Critical alerts: None" FontSize="14" TextColor="#C62828" />
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                            <Border Grid.Column="0" BackgroundColor="#F6F9FC" Stroke="#D9E2EC" StrokeShape="RoundRectangle 10" Padding="10">
+                                <Label x:Name="ForecastDay1Label" FontSize="12" TextColor="#465564" Text="Day 1" />
+                            </Border>
+                            <Border Grid.Column="1" BackgroundColor="#F6F9FC" Stroke="#D9E2EC" StrokeShape="RoundRectangle 10" Padding="10">
+                                <Label x:Name="ForecastDay2Label" FontSize="12" TextColor="#465564" Text="Day 2" />
+                            </Border>
+                            <Border Grid.Column="2" BackgroundColor="#F6F9FC" Stroke="#D9E2EC" StrokeShape="RoundRectangle 10" Padding="10">
+                                <Label x:Name="ForecastDay3Label" FontSize="12" TextColor="#465564" Text="Day 3" />
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" Stroke="#E3E8ED" StrokeThickness="1" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Padding="14" Spacing="8">
+                        <Label Text="Alerts and Notifications" FontSize="18" FontAttributes="Bold" TextColor="#1E2A33" />
+                        <CollectionView x:Name="AlertsCollectionView" SelectionMode="None">
+                            <CollectionView.EmptyView>
+                                <Label Text="No alerts right now." TextColor="#66757F" FontSize="13" />
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,4,0,0" BackgroundColor="#FFF8F2" Stroke="#FFD7C2" StrokeShape="RoundRectangle 10" Padding="10">
+                                        <VerticalStackLayout Spacing="2">
+                                            <Label Text="{Binding Title}" FontSize="14" FontAttributes="Bold" TextColor="#9A3412" />
+                                            <Label Text="{Binding Detail}" FontSize="12" TextColor="#9A3412" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" Stroke="#E3E8ED" StrokeThickness="1" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Padding="14" Spacing="8">
+                        <Label Text="Recent Activity" FontSize="18" FontAttributes="Bold" TextColor="#1E2A33" />
+                        <CollectionView x:Name="ActivityCollectionView" SelectionMode="None">
+                            <CollectionView.EmptyView>
+                                <Label Text="No recent activity yet." TextColor="#66757F" FontSize="13" />
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <VerticalStackLayout Margin="0,4,0,4" Spacing="2">
+                                        <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="14" TextColor="#1E2A33" />
+                                        <Label Text="{Binding Detail}" FontSize="12" TextColor="#5A6773" />
+                                        <Label Text="{Binding TimeText}" FontSize="11" TextColor="#8A97A3" />
+                                    </VerticalStackLayout>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

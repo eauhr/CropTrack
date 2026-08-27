@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CropTrackApp.Pages.DashboardPage"
+             BackgroundColor="#F3F5F7"
+             Title="Dashboard">
+    <RefreshView x:Name="DashboardRefreshView" Refreshing="OnRefreshRequested">
+        <ScrollView>
+            <VerticalStackLayout Padding="20,20,20,32" Spacing="14">
+                <VerticalStackLayout Spacing="2">
+                    <Label x:Name="WelcomeLabel"
+                           Text="Welcome"
+                           FontSize="28"
+                           FontAttributes="Bold"
+                           TextColor="#1E2A33" />
+                    <Label Text="Simple daily overview of your farm"
+                           FontSize="13"
+                           TextColor="#5B6975" />
+                </VerticalStackLayout>
+
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+                    <Border Grid.Row="0" Grid.Column="0" BackgroundColor="White" Stroke="#E3E8ED" StrokeShape="RoundRectangle 12" Padding="12">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Crops" FontSize="12" TextColor="#687887" />
+                            <Label x:Name="CropsCountLabel" Text="0" FontSize="24" FontAttributes="Bold" TextColor="#0D1B2A" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Row="0" Grid.Column="1" BackgroundColor="White" Stroke="#E3E8ED" StrokeShape="RoundRectangle 12" Padding="12">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Fields" FontSize="12" TextColor="#687887" />
+                            <Label x:Name="FieldsCountLabel" Text="0" FontSize="24" FontAttributes="Bold" TextColor="#0D1B2A" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Row="1" Grid.Column="0" BackgroundColor="White" Stroke="#E3E8ED" StrokeShape="RoundRectangle 12" Padding="12">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Acreage" FontSize="12" TextColor="#687887" />
+                            <Label x:Name="AcreageLabel" Text="0.0" FontSize="24" FontAttributes="Bold" TextColor="#0D1B2A" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Row="1" Grid.Column="1" BackgroundColor="White" Stroke="#E3E8ED" StrokeShape="RoundRectangle 12" Padding="12">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Active Plantings" FontSize="12" TextColor="#687887" />
+                            <Label x:Name="PlantingsCountLabel" Text="0" FontSize="24" FontAttributes="Bold" TextColor="#0D1B2A" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <Border BackgroundColor="White" Stroke="#E3E8ED" StrokeShape="RoundRectangle 14" Padding="12">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Crop Performance Snapshot" FontSize="17" FontAttributes="Bold" TextColor="#1E2A33" />
+                        <Label x:Name="PerformanceLine1Label" Text="- Loading..." FontSize="13" TextColor="#32404C" />
+                        <Label x:Name="PerformanceLine2Label" Text="- Loading..." FontSize="13" TextColor="#32404C" />
+                        <Label x:Name="PerformanceLine3Label" Text="- Loading..." FontSize="13" TextColor="#32404C" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                    <Border Grid.Column="0" BackgroundColor="White" Stroke="#E3E8ED" StrokeShape="RoundRectangle 14" Padding="12">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Predicted Revenue" FontSize="14" FontAttributes="Bold" TextColor="#1E2A33" />
+                            <Label x:Name="PredictedRevenueLabel" Text="0.00" FontSize="24" FontAttributes="Bold" TextColor="#1B5E20" />
+                            <Label x:Name="RevenueNoteLabel" Text="Based on latest prices and active plantings" FontSize="11" TextColor="#5B6975" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="1" BackgroundColor="White" Stroke="#E3E8ED" StrokeShape="RoundRectangle 14" Padding="12">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Weather Warnings" FontSize="14" FontAttributes="Bold" TextColor="#1E2A33" />
+                            <Label x:Name="WeatherWarningCountLabel" Text="0" FontSize="24" FontAttributes="Bold" TextColor="#C62828" />
+                            <Label x:Name="WeatherWarningNoteLabel" Text="No critical warnings" FontSize="11" TextColor="#5B6975" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <Border BackgroundColor="White" Stroke="#E3E8ED" StrokeShape="RoundRectangle 14" Padding="12">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Daily Brief" FontSize="17" FontAttributes="Bold" TextColor="#1E2A33" />
+                        <Label x:Name="DailyBriefLabel" Text="Preparing today brief..." FontSize="13" TextColor="#32404C" />
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>
