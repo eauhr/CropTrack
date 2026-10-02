@@ -81,7 +81,3 @@ Configure your connection string and JWT settings in `appsettings.Development.js
 ### Frontend
 
 Open `croptrack.sln` in Visual Studio, set `CropTrackApp` as the startup project, choose a target platform, and run.
-
----
-
-Portfolio project — shared for demonstration purposes.
